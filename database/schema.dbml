@@ -1,0 +1,113 @@
+Project prueba {
+  database_type: 'MySQL'
+  Note: 'Modelo relacional para el examen Timbox'
+}
+
+Table roles {
+  id bigint [pk, increment]
+  name varchar(60) [not null]
+  slug varchar(40) [not null, unique]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table users {
+  id bigint [pk, increment]
+  role_id bigint [not null]
+
+  name text [not null, note: 'Encrypted']
+  email text [not null, note: 'Encrypted']
+  email_hash char(64) [not null, unique, note: 'HMAC-SHA-256 of normalized email']
+  rfc text [not null, note: 'Encrypted']
+  rfc_hash char(64) [not null, unique, note: 'HMAC-SHA-256 of normalized RFC']
+  password varchar(255) [not null, note: 'Argon2id or bcrypt hash']
+
+  address text [note: 'Encrypted']
+  phone text [note: 'Encrypted']
+  website text [note: 'Encrypted']
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table states {
+  id bigint [pk, increment]
+  clave varchar(3) [not null, unique]
+  nombre varchar(60) [not null]
+}
+
+Table collaborators {
+  id bigint [pk, increment]
+  user_id bigint [not null]
+
+  nombre text [not null, note: 'Encrypted']
+  correo text [not null, note: 'Encrypted']
+  correo_hash char(64) [not null, note: 'HMAC-SHA-256 of normalized email']
+  rfc text [not null, note: 'Encrypted']
+  rfc_hash char(64) [not null, note: 'HMAC-SHA-256 of normalized RFC']
+  domicilio_fiscal text [not null, note: 'Encrypted']
+  curp text [not null, note: 'Encrypted']
+  numero_seguridad_social text [not null, note: 'Encrypted']
+  fecha_inicio_laboral date [not null]
+  tipo_contrato text [not null, note: 'Encrypted']
+  departamento text [not null, note: 'Encrypted']
+  puesto text [not null, note: 'Encrypted']
+  salario_diario text [not null, note: 'Encrypted decimal value']
+  salario text [not null, note: 'Encrypted decimal value']
+
+  state_id bigint [not null]
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (user_id, correo_hash) [unique]
+    (user_id, rfc_hash) [unique]
+  }
+}
+
+Table managed_users {
+  id bigint [pk, increment]
+  created_by bigint [not null]
+
+  name text [not null, note: 'Encrypted']
+  rfc text [not null, note: 'Encrypted']
+  rfc_hash char(64) [not null, note: 'HMAC-SHA-256 of normalized RFC']
+  address text [note: 'Encrypted']
+  phone text [note: 'Encrypted']
+  website text [note: 'Encrypted']
+
+  created_at timestamp
+  updated_at timestamp
+
+  indexes {
+    (created_by, rfc_hash) [unique]
+  }
+}
+
+Table password_reset_tokens {
+  user_id bigint [pk]
+  token_hash char(64) [not null, unique, note: 'Hash of a random, single-use reset token']
+  expires_at timestamp [not null]
+  used_at timestamp
+  created_at timestamp
+}
+
+Table sessions {
+  id varchar(255) [pk, note: 'Laravel session identifier']
+  user_id bigint [unique, note: 'Nullable; uniqueness restricts authenticated users to one active session']
+  ip_address varchar(45)
+  user_agent text
+  payload longtext [not null]
+  last_activity int [not null]
+
+  indexes {
+    last_activity
+  }
+}
+
+Ref: users.role_id > roles.id [delete: restrict]
+Ref: collaborators.user_id > users.id [delete: cascade]
+Ref: collaborators.state_id > states.id [delete: restrict]
+Ref: managed_users.created_by > users.id [delete: cascade]
+Ref: password_reset_tokens.user_id > users.id [delete: cascade]
+Ref: sessions.user_id > users.id [delete: cascade]

@@ -1,0 +1,255 @@
+@import 'tailwindcss';
+@import 'flowbite/src/themes/default';
+
+@plugin 'flowbite/plugin';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../../node_modules/flowbite';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+
+@theme {
+    --font-sans:
+        'Instrument Sans',
+        ui-sans-serif,
+        system-ui,
+        sans-serif,
+        'Apple Color Emoji',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji';
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    button,
+    input,
+    textarea {
+        font: inherit;
+    }
+
+    :focus-visible {
+        outline: 2px solid oklch(0.488 0.243 264.376);
+        outline-offset: 2px;
+    }
+}
+
+@layer components {
+    .skip-link {
+        @apply fixed top-3 left-3 z-50 -translate-y-20 rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-semibold text-white transition-transform focus:translate-y-0;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Formulario
+    |--------------------------------------------------------------------------
+    */
+
+    .field-group {
+        @apply flex flex-col gap-1.5;
+    }
+
+    .field-label {
+        @apply text-sm font-medium text-gray-900;
+    }
+
+    .field-hint {
+        @apply text-xs leading-5 text-gray-500;
+    }
+
+    /*
+     * Contenedor necesario para posicionar elementos
+     * dentro del input, por ejemplo el botón del password.
+     */
+    .field-input-wrapper {
+        @apply relative w-full;
+    }
+
+    .field-input {
+        @apply block min-h-10 w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-900 transition-colors placeholder:text-gray-400 hover:border-gray-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600/20;
+    }
+
+    /*
+     * Dejamos espacio a la derecha para que el texto
+     * no quede debajo del icono del ojo.
+     */
+    .field-input-password {
+        @apply pr-12;
+    }
+
+    .field-input[aria-invalid='true'] {
+        @apply border-red-600 bg-red-50 focus:border-red-600 focus:ring-red-600/20;
+    }
+
+    .field-error {
+        @apply text-xs font-medium leading-5 text-red-700;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mostrar / ocultar contraseña
+    |--------------------------------------------------------------------------
+    */
+
+    .password-toggle {
+        @apply absolute top-1/2 right-2 z-10 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-600/30;
+    }
+
+    .password-icon {
+        @apply pointer-events-none h-5 w-5;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Botones
+    |--------------------------------------------------------------------------
+    */
+
+    .primary-button {
+        @apply inline-flex min-h-10 items-center justify-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 disabled:cursor-wait disabled:bg-gray-400;
+    }
+
+    .secondary-button {
+        @apply inline-flex min-h-10 items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-900 transition-colors hover:bg-gray-100 focus:ring-4 focus:ring-gray-200;
+    }
+
+    .word-field-row {
+        @apply grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3;
+    }
+
+    .word-remove-button {
+        @apply inline-flex min-h-10 items-center justify-center rounded-lg px-3 py-2 text-sm font-medium text-red-700 transition-colors hover:bg-red-50 hover:text-red-800 focus:ring-4 focus:ring-red-100;
+    }
+
+    .text-link {
+        @apply rounded-sm text-sm font-medium text-blue-700 hover:underline;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mensajes
+    |--------------------------------------------------------------------------
+    */
+
+    .status-message {
+        @apply rounded-lg border border-green-200 bg-green-50 px-3 py-2.5 text-sm text-green-800;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sidebar
+    |--------------------------------------------------------------------------
+    */
+
+    .sidebar-link {
+        @apply flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900;
+    }
+
+    .sidebar-link-active {
+        @apply bg-blue-50 font-medium text-blue-700 hover:bg-blue-100 hover:text-blue-800;
+    }
+
+    .sidebar-toggle {
+        @apply inline-flex size-10 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-blue-600/30;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Panels
+    |--------------------------------------------------------------------------
+    */
+
+    .panel {
+        @apply rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6;
+    }
+
+    .panel-heading {
+        @apply mb-6 space-y-1 border-b border-gray-200 pb-4;
+    }
+
+    .panel-kicker {
+        @apply text-xs font-medium text-gray-500;
+    }
+
+    .tab-list {
+        @apply flex gap-1 border-b border-gray-200;
+    }
+
+    .tab-button {
+        @apply inline-flex min-h-10 items-center border-b-2 border-transparent px-3 py-2 text-sm font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-900;
+    }
+
+    .tab-button[aria-selected='true'] {
+        @apply border-blue-700 text-blue-700 hover:border-blue-700 hover:text-blue-800;
+    }
+}
+
+@media (min-width: 640px) {
+
+    .sidebar-shell.sidebar-collapsed,
+    html.sidebar-collapsed .sidebar-shell {
+        width: 5rem;
+    }
+
+    .sidebar-shell.sidebar-collapsed .sidebar-label,
+    .sidebar-shell.sidebar-collapsed .sidebar-account-details,
+    html.sidebar-collapsed .sidebar-shell .sidebar-label,
+    html.sidebar-collapsed .sidebar-shell .sidebar-account-details {
+        max-width: 0;
+        overflow: hidden;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+
+    .sidebar-shell .sidebar-label,
+    .sidebar-shell .sidebar-account-details {
+        transition: max-width 150ms ease, opacity 150ms ease;
+    }
+
+    .sidebar-shell.sidebar-collapsed .sidebar-toggle,
+    html.sidebar-collapsed .sidebar-shell .sidebar-toggle {
+        margin-inline: auto;
+    }
+
+    .sidebar-shell.sidebar-collapsed .sidebar-link,
+    html.sidebar-collapsed .sidebar-shell .sidebar-link {
+        justify-content: center;
+        gap: 0;
+        padding-inline: 0.5rem;
+    }
+
+    .sidebar-shell.sidebar-collapsed .sidebar-account,
+    html.sidebar-collapsed .sidebar-shell .sidebar-account {
+        padding-top: 0.75rem;
+    }
+
+    html.sidebar-collapsed [data-sidebar-icon='collapse'] {
+        display: none;
+    }
+
+    html.sidebar-collapsed [data-sidebar-icon='expand'][hidden] {
+        display: block !important;
+    }
+
+    .sidebar-shell.sidebar-collapsed ~ .app-content,
+    html.sidebar-collapsed .app-content {
+        margin-left: 5rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
