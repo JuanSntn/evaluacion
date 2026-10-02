@@ -1,0 +1,108 @@
+@startuml
+hide methods
+skinparam classAttributeIconSize 0
+
+class Role {
+  +id: BIGINT UNSIGNED <<PK>>
+  name: VARCHAR(60)
+  slug: VARCHAR(40) <<UQ>>
+  created_at: TIMESTAMP?
+  updated_at: TIMESTAMP?
+}
+
+class User {
+  +id: BIGINT UNSIGNED <<PK>>
+  role_id: BIGINT UNSIGNED <<FK>>
+  name: TEXT
+  email: TEXT
+  email_hash: CHAR(64) <<UQ>>
+  rfc: TEXT
+  rfc_hash: CHAR(64) <<UQ>>
+  password: VARCHAR(255)
+  address: TEXT?
+  phone: TEXT?
+  website: TEXT?
+  created_at: TIMESTAMP?
+  updated_at: TIMESTAMP?
+}
+
+class State {
+  +id: BIGINT UNSIGNED <<PK>>
+  clave: CHAR(3) <<UQ>>
+  clave_curp: CHAR(2) <<UQ>>
+  nombre: VARCHAR(60)
+}
+
+class Collaborator {
+  +id: BIGINT UNSIGNED <<PK>>
+  user_id: BIGINT UNSIGNED <<FK>>
+  nombre: TEXT
+  correo: TEXT
+  correo_hash: CHAR(64)
+  rfc: TEXT
+  rfc_hash: CHAR(64)
+  domicilio_fiscal: TEXT
+  curp: TEXT
+  curp_hash: CHAR(64) <<UQ>>
+  numero_seguridad_social: TEXT
+  nss_hash: CHAR(64) <<UQ>>
+  fecha_inicio_laboral: DATE
+  tipo_contrato: TEXT
+  departamento: TEXT
+  puesto: TEXT
+  salario_diario: TEXT
+  salario: TEXT
+  state_id: BIGINT UNSIGNED <<FK>>
+  created_at: TIMESTAMP?
+  updated_at: TIMESTAMP?
+}
+
+class ManagedUser {
+  +id: BIGINT UNSIGNED <<PK>>
+  created_by: BIGINT UNSIGNED <<FK>>
+  name: TEXT
+  rfc: TEXT
+  rfc_hash: CHAR(64)
+  address: TEXT?
+  phone: TEXT?
+  website: TEXT?
+  created_at: TIMESTAMP?
+  updated_at: TIMESTAMP?
+}
+
+class PasswordResetToken {
+  +user_id: BIGINT UNSIGNED <<PK, FK>>
+  token_hash: CHAR(64) <<UQ>>
+  expires_at: TIMESTAMP
+  used_at: TIMESTAMP?
+  created_at: TIMESTAMP?
+}
+
+class Session {
+  +id: VARCHAR(255) <<PK>>
+  user_id: BIGINT UNSIGNED? <<FK, UQ>>
+  ip_address: VARCHAR(45)?
+  user_agent: TEXT?
+  payload: LONGTEXT
+  last_activity: INT
+}
+
+Role "1" <-- "0..*" User : role_id
+User "1" <-- "0..*" Collaborator : user_id
+State "1" <-- "0..*" Collaborator : state_id
+User "1" <-- "0..*" ManagedUser : created_by
+User "1" <-- "0..1" PasswordResetToken : user_id
+User "1" <-- "0..1" Session : user_id
+
+note right of Collaborator
+  UNIQUE(user_id, correo_hash)
+  UNIQUE(user_id, rfc_hash)
+  UNIQUE(curp_hash)
+  UNIQUE(nss_hash)
+end note
+
+note right of ManagedUser
+  UNIQUE(created_by, rfc_hash)
+end note
+
+@enduml
